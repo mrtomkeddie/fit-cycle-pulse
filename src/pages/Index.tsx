@@ -1,7 +1,13 @@
-import HIITTimer from '../components/HIITTimer';
+import IntervalTimer from '../components/IntervalTimer';
+import InstallPrompt from '../components/InstallPrompt';
 
 const Index = () => {
-  return <HIITTimer />;
+  return (
+    <>
+      <IntervalTimer />
+      <InstallPrompt />
+    </>
+  );
 };
 
 export default Index;
