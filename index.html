@@ -2,24 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Interval Timer - Premium Interval Training</title>
-    <meta name="description" content="Premium interval timer for high-intensity workouts with customizable work and rest periods" />
-    <meta name="author" content="Interval Timer App" />
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#1a1a1a" />
-    
-    <!-- iOS Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Interval Timer" />
-    <link rel="apple-touch-icon" href="/app-icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#1a1b1e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <title>Interval Timer</title>
+    <meta name="description" content="Customizable interval timer for workouts with adjustable work and rest periods" />
+    <meta name="theme-color" content="#1a1b1e" />
     
     <!-- App Icons -->
-    <link rel="icon" href="/app-icon-192.png" type="image/png" />
-    <link rel="shortcut icon" href="/app-icon-192.png" type="image/png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/fit-cycle-pulse/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/fit-cycle-pulse/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/fit-cycle-pulse/icons/apple-touch-icon.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/fit-cycle-pulse/manifest.json">
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Interval Timer" />
 
     <meta property="og:title" content="c16f8432-6fc7-4e33-ab45-212dd57f4a21" />
     <meta property="og:description" content="Lovable Generated Project" />
@@ -29,11 +30,32 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    <script type="module" crossorigin src="/assets/index-CA93fi-d.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-0UAI6fLy.css">
-  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <!-- End Single Page Apps for GitHub Pages -->
+    <script type="module" crossorigin src="/fit-cycle-pulse/assets/index-DkIx1HWq.js"></script>
+    <link rel="stylesheet" crossorigin href="/fit-cycle-pulse/assets/index-C3iK1E2B.css">
+  </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
