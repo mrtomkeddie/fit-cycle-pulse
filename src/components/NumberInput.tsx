@@ -55,7 +55,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         max={max}
         value={value}
         onChange={handleChange}
-        className={`bg-input border-border text-foreground text-center text-xl font-semibold h-14 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${className}`}
+        className={`bg-input border-border text-foreground text-center text-xl font-semibold h-14 px-6 focus-visible:ring-offset-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${className}`}
       />
       <Button
         type="button"

@@ -10,6 +10,8 @@ export interface WorkoutPreset {
   workSeconds: number;
   restSeconds: number;
   totalMinutes: number;
+  warmUpDuration?: number; // Optional warm-up in seconds
+  warmUpExercises?: Exercise[]; // Optional warm-up exercises
 }
 
 export interface PresetStore {

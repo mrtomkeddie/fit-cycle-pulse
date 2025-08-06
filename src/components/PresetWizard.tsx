@@ -5,24 +5,31 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Trash2, Edit3, Timer, Zap, Dumbbell, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { usePresets } from '@/hooks/usePresets';
+import { Timer, Zap, Dumbbell, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WorkoutPreset } from '@/types/presets';
 import NumberInput from './NumberInput';
 
-interface PresetManagerProps {
+type WizardStep = 'basic' | 'timing' | 'warmup' | 'exercises' | 'review';
+
+interface PresetWizardProps {
   onClose: () => void;
+  onSave: (preset: WorkoutPreset) => void;
+  editingPreset?: WorkoutPreset | null;
 }
 
-const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
-  const { presets, selectedPresetId, selectPreset, addPreset, updatePreset, deletePreset } = usePresets();
-  const [showWizard, setShowWizard] = useState(false);
-  const [editingPreset, setEditingPreset] = useState<WorkoutPreset | null>(null);
-  
-  // Wizard state
-  const [currentStep, setCurrentStep] = useState<'basic' | 'timing' | 'warmup' | 'exercises' | 'review'>('basic');
-  const [presetData, setPresetData] = useState<Partial<WorkoutPreset>>({});
-  const [includeWarmUp, setIncludeWarmUp] = useState(false);
+const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPreset }) => {
+  const [currentStep, setCurrentStep] = useState<WizardStep>('basic');
+  const [presetData, setPresetData] = useState<Partial<WorkoutPreset>>({
+    name: editingPreset?.name || '',
+    workSeconds: editingPreset?.workSeconds || 20,
+    restSeconds: editingPreset?.restSeconds || 40,
+    totalMinutes: editingPreset?.totalMinutes || 20,
+    exercises: editingPreset?.exercises || [],
+    warmUpDuration: editingPreset?.warmUpDuration || 0,
+    warmUpExercises: editingPreset?.warmUpExercises || [],
+  });
+
+  const [includeWarmUp, setIncludeWarmUp] = useState(!!editingPreset?.warmUpDuration);
   const [exerciseInput, setExerciseInput] = useState('');
   const [warmUpInput, setWarmUpInput] = useState('');
 
@@ -34,69 +41,12 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
     return `${minutes}m ${remainingSeconds}s`;
   };
 
-  const handleSavePreset = (preset: WorkoutPreset) => {
-    if (editingPreset) {
-      updatePreset(preset.id, preset);
-    } else {
-      addPreset(preset);
-    }
-    setShowWizard(false);
-    setEditingPreset(null);
-    // Reset wizard state
-    setCurrentStep('basic');
-    setPresetData({});
-    setIncludeWarmUp(false);
-    setExerciseInput('');
-    setWarmUpInput('');
-  };
-
-  const startEditing = (preset: WorkoutPreset) => {
-    setEditingPreset(preset);
-    setPresetData({
-      name: preset.name,
-      workSeconds: preset.workSeconds,
-      restSeconds: preset.restSeconds,
-      totalMinutes: preset.totalMinutes,
-      exercises: preset.exercises,
-      warmUpDuration: preset.warmUpDuration || 0,
-      warmUpExercises: preset.warmUpExercises || [],
-    });
-    setIncludeWarmUp(!!preset.warmUpDuration);
-    setCurrentStep('basic');
-    setShowWizard(true);
-  };
-
-  const startCreating = () => {
-    setEditingPreset(null);
-    setPresetData({
-      name: '',
-      workSeconds: 20,
-      restSeconds: 40,
-      totalMinutes: 20,
-      exercises: [],
-      warmUpDuration: 0,
-      warmUpExercises: [],
-    });
-    setIncludeWarmUp(false);
-    setExerciseInput('');
-    setWarmUpInput('');
-    setCurrentStep('basic');
-    setShowWizard(true);
-  };
-
-  const handleDeletePreset = (preset: WorkoutPreset) => {
-    if (confirm(`Delete "${preset.name}" preset?`)) {
-      deletePreset(preset.id);
-    }
-  };
-
-  // Wizard functions
-  const steps = [
-    { id: 'basic' as const, title: 'Basic Info', icon: <Timer className="h-4 w-4" /> },
-    { id: 'timing' as const, title: 'Timing', icon: <Timer className="h-4 w-4" /> },
-    { id: 'warmup' as const, title: 'Warm-up', icon: <Zap className="h-4 w-4" /> },
-    { id: 'exercises' as const, title: 'Exercises', icon: <Dumbbell className="h-4 w-4" /> },
-    { id: 'review' as const, title: 'Review', icon: <Check className="h-4 w-4" /> },
+  const steps: { id: WizardStep; title: string; icon: React.ReactNode }[] = [
+    { id: 'basic', title: 'Basic Info', icon: <Timer className="h-4 w-4" /> },
+    { id: 'timing', title: 'Timing', icon: <Timer className="h-4 w-4" /> },
+    { id: 'warmup', title: 'Warm-up', icon: <Zap className="h-4 w-4" /> },
+    { id: 'exercises', title: 'Exercises', icon: <Dumbbell className="h-4 w-4" /> },
+    { id: 'review', title: 'Review', icon: <Check className="h-4 w-4" /> },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.id === currentStep);
@@ -168,7 +118,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
     }
   };
 
-  const handleWizardSave = () => {
+  const handleSave = () => {
     const preset: WorkoutPreset = {
       id: editingPreset?.id || `preset-${Date.now()}`,
       name: presetData.name!,
@@ -182,7 +132,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
       }),
     };
 
-    handleSavePreset(preset);
+    onSave(preset);
   };
 
   const renderStepContent = () => {
@@ -398,14 +348,6 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
         );
 
       case 'review':
-        const formatDuration = (seconds: number): string => {
-          const minutes = Math.floor(seconds / 60);
-          const remainingSeconds = seconds % 60;
-          if (minutes === 0) return `${seconds}s`;
-          if (remainingSeconds === 0) return `${minutes}m`;
-          return `${minutes}m ${remainingSeconds}s`;
-        };
-
         return (
           <div className="space-y-4 p-3">
             <div className="text-center mb-6">
@@ -459,163 +401,84 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
     }
   };
 
-  if (showWizard) {
-    return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg bg-card border-border shadow-timer max-h-[90vh] overflow-hidden">
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-foreground">
-                {editingPreset ? 'Edit Workout' : 'Create Workout'}
-              </h2>
-              <Button variant="ghost" size="sm" onClick={() => setShowWizard(false)}>
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
+  return (
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-lg bg-card border-border shadow-timer max-h-[90vh] overflow-hidden">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-foreground">
+              {editingPreset ? 'Edit Workout' : 'Create Workout'}
+            </h2>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
 
-            {/* Progress Steps */}
-            <div className="flex items-center justify-between mb-6">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                    index <= currentStepIndex 
-                      ? 'bg-primary border-primary text-primary-foreground' 
-                      : 'border-muted text-muted-foreground'
-                  }`}>
-                    {index < currentStepIndex ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      step.icon
-                    )}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className={`w-8 h-0.5 mx-2 ${
-                      index < currentStepIndex ? 'bg-primary' : 'bg-muted'
-                    }`} />
+          {/* Progress Steps */}
+          <div className="flex items-center justify-between mb-6">
+            {steps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                  index <= currentStepIndex 
+                    ? 'bg-primary border-primary text-primary-foreground' 
+                    : 'border-muted text-muted-foreground'
+                }`}>
+                  {index < currentStepIndex ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    step.icon
                   )}
                 </div>
-              ))}
-            </div>
-
-            {/* Step Content */}
-            <div className="min-h-[300px] overflow-y-auto">
-              {renderStepContent()}
-            </div>
-
-            {/* Navigation */}
-            <div className="flex justify-between mt-6">
-              <Button
-                variant="outline"
-                onClick={prevStep}
-                disabled={currentStepIndex === 0}
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
-              </Button>
-
-              {currentStepIndex === steps.length - 1 ? (
-                <Button
-                  onClick={handleWizardSave}
-                  disabled={!canProceed()}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Check className="h-4 w-4 mr-1" />
-                  {editingPreset ? 'Update Preset' : 'Create Preset'}
-                </Button>
-              ) : (
-                <Button
-                  onClick={nextStep}
-                  disabled={!canProceed()}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4 mx-2">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">Workout Presets</h3>
-        <Button
-          onClick={startCreating}
-          size="sm"
-          className="bg-primary hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          New Preset
-        </Button>
-      </div>
-
-      {/* Current presets */}
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-foreground">Select Preset:</div>
-        <div className="grid gap-2 px-6">
-          <Button
-            variant={selectedPresetId === null ? "default" : "outline"}
-            onClick={() => selectPreset(null)}
-            className="justify-start"
-          >
-            Manual Mode (No Preset)
-          </Button>
-          {presets.length === 0 && (
-            <div className="text-center py-6 text-muted-foreground">
-              <p className="text-sm">No workout presets yet.</p>
-              <p className="text-xs">Click "New Preset" to create your first workout!</p>
-            </div>
-          )}
-          {presets.map(preset => (
-            <div key={preset.id} className="flex gap-2">
-              <Button
-                variant={selectedPresetId === preset.id ? "default" : "outline"}
-                onClick={() => selectPreset(preset.id)}
-                className="flex-1 justify-start text-left"
-              >
-                <div>
-                  <div className="font-medium">{preset.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {preset.exercises.length} exercises • {preset.workSeconds}s work • {preset.restSeconds}s rest
-                    {preset.warmUpDuration && ` • ${formatDuration(preset.warmUpDuration)} warm-up`}
-                  </div>
-                </div>
-              </Button>
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => startEditing(preset)}
-                  className="text-muted-foreground hover:text-foreground px-2"
-                  title="Edit preset"
-                >
-                  <Edit3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDeletePreset(preset)}
-                  className="text-destructive hover:text-destructive px-2"
-                  title="Delete preset"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                {index < steps.length - 1 && (
+                  <div className={`w-8 h-0.5 mx-2 ${
+                    index < currentStepIndex ? 'bg-primary' : 'bg-muted'
+                  }`} />
+                )}
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
 
-      <Button onClick={onClose} className="w-full">
-        Done
-      </Button>
+          {/* Step Content */}
+          <div className="min-h-[300px] overflow-y-auto">
+            {renderStepContent()}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-6">
+            <Button
+              variant="outline"
+              onClick={prevStep}
+              disabled={currentStepIndex === 0}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Previous
+            </Button>
+
+            {currentStepIndex === steps.length - 1 ? (
+              <Button
+                onClick={handleSave}
+                disabled={!canProceed()}
+                className="bg-primary hover:bg-primary/90"
+              >
+                <Check className="h-4 w-4 mr-1" />
+                {editingPreset ? 'Update Preset' : 'Create Preset'}
+              </Button>
+            ) : (
+              <Button
+                onClick={nextStep}
+                disabled={!canProceed()}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
 
-export default PresetManager;
+export default PresetWizard;

@@ -3,25 +3,7 @@ import { WorkoutPreset, PresetStore } from '@/types/presets';
 
 const PRESETS_STORAGE_KEY = 'hiit-timer-presets';
 
-const defaultPresets: WorkoutPreset[] = [
-  {
-    id: 'default-hiit',
-    name: 'Classic HIIT',
-    exercises: [
-      { name: 'Jumping Jacks' },
-      { name: 'Push-ups' },
-      { name: 'Mountain Climbers' },
-      { name: 'Burpees' },
-      { name: 'High Knees' },
-      { name: 'Squats' },
-      { name: 'Plank' },
-      { name: 'Lunges' },
-    ],
-    workSeconds: 20,
-    restSeconds: 40,
-    totalMinutes: 20,
-  },
-];
+const defaultPresets: WorkoutPreset[] = [];
 
 export const usePresets = () => {
   const [presetStore, setPresetStore] = useState<PresetStore>({
