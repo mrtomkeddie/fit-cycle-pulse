@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/fit-cycle-pulse/',
+  base: '/workoutimer/',
   server: {
     host: "::",
     port: 8080,

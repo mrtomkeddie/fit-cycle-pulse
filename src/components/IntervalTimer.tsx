@@ -98,7 +98,7 @@ const IntervalTimer: React.FC = () => {
         {/* Header with settings */}
         <div className="flex items-center justify-between">
           <img 
-            src="/fit-cycle-pulse/icons/logo.png" 
+            src="/workoutimer/icons/logo.png" 
             alt="Fit Cycle Pulse" 
             className="h-10 w-auto"
           />
