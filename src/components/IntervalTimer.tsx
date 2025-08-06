@@ -6,7 +6,7 @@ import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
 
-const HIITTimer: React.FC = () => {
+const IntervalTimer: React.FC = () => {
   // Timer settings
   const [totalMinutes, setTotalMinutes] = useState(20);
   const [workSeconds, setWorkSeconds] = useState(20);
@@ -101,7 +101,7 @@ const HIITTimer: React.FC = () => {
         
         {/* Header with settings */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">HIIT Timer</h1>
+          <h1 className="text-2xl font-bold text-foreground">Interval Timer</h1>
           <Button
             variant="ghost"
             size="sm"
@@ -222,4 +222,4 @@ const HIITTimer: React.FC = () => {
   );
 };
 
-export default HIITTimer;
+export default IntervalTimer;

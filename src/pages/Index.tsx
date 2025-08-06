@@ -1,7 +1,7 @@
-import HIITTimer from '../components/HIITTimer';
+import IntervalTimer from '../components/IntervalTimer';
 
 const Index = () => {
-  return <HIITTimer />;
+  return <IntervalTimer />;
 };
 
 export default Index;
