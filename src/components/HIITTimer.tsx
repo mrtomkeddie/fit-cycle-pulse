@@ -5,8 +5,13 @@ import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
+import { usePresets } from '@/hooks/usePresets';
+import { Exercise } from '@/types/presets';
 
 const HIITTimer: React.FC = () => {
+  // Preset management
+  const { selectedPreset, selectPreset } = usePresets();
+  
   // Timer settings
   const [totalMinutes, setTotalMinutes] = useState(20); // Total workout time in minutes
   const [workSeconds, setWorkSeconds] = useState(20); // Work duration in seconds
@@ -22,6 +27,30 @@ const HIITTimer: React.FC = () => {
   
   // UI state
   const [showSettings, setShowSettings] = useState(false);
+
+  // Update timer settings when preset changes
+  useEffect(() => {
+    if (selectedPreset) {
+      setTotalMinutes(selectedPreset.totalMinutes);
+      setWorkSeconds(selectedPreset.workSeconds);
+      resetTimer();
+    }
+  }, [selectedPreset]);
+
+  // Get current and next exercise
+  const getCurrentExercise = (): Exercise | null => {
+    if (!selectedPreset || selectedPreset.exercises.length === 0) return null;
+    const exerciseIndex = (currentRound - 1) % selectedPreset.exercises.length;
+    return selectedPreset.exercises[exerciseIndex];
+  };
+
+  const getNextExercise = (): Exercise | null => {
+    if (!selectedPreset || selectedPreset.exercises.length === 0) return null;
+    const nextRound = isWorkPhase ? currentRound : currentRound + 1;
+    if (nextRound > totalRounds) return null;
+    const exerciseIndex = (nextRound - 1) % selectedPreset.exercises.length;
+    return selectedPreset.exercises[exerciseIndex];
+  };
 
   // No need to calculate total rounds - it's fixed
 
@@ -179,22 +208,38 @@ const HIITTimer: React.FC = () => {
           </div>
         </Card>
 
-        {/* Workout summary */}
+        {/* Exercise Display */}
         <Card className="p-4 bg-card border-border shadow-sm">
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div>
-              <div className="text-sm text-muted-foreground">Rounds</div>
-              <div className="font-semibold text-foreground">{totalRounds}</div>
+          {selectedPreset ? (
+            <div className="text-center space-y-2">
+              {isWorkPhase ? (
+                <div>
+                  <div className="text-sm text-muted-foreground">Current Exercise</div>
+                  <div className="font-semibold text-work text-lg">
+                    {getCurrentExercise()?.name || 'Unknown Exercise'}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-sm text-muted-foreground">Next Exercise</div>
+                  <div className="font-semibold text-foreground text-lg">
+                    {getNextExercise()?.name || 'Workout Complete!'}
+                  </div>
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground mt-2">
+                Preset: {selectedPreset.name}
+              </div>
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Work</div>
-              <div className="font-semibold text-work">{workSeconds}s</div>
+          ) : (
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground mb-2">No preset selected</div>
+              <div className="font-semibold text-foreground">Choose a preset in settings</div>
+              <div className="text-xs text-muted-foreground mt-2">
+                Or use manual mode with current settings
+              </div>
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Rest</div>
-              <div className="font-semibold text-rest">{restSeconds}s</div>
-            </div>
-          </div>
+          )}
         </Card>
       </div>
 
