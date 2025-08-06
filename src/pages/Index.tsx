@@ -1,7 +1,13 @@
 import IntervalTimer from '../components/IntervalTimer';
+import InstallPrompt from '../components/InstallPrompt';
 
 const Index = () => {
-  return <IntervalTimer />;
+  return (
+    <>
+      <IntervalTimer />
+      <InstallPrompt />
+    </>
+  );
 };
 
 export default Index;

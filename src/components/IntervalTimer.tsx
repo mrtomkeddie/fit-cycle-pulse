@@ -5,6 +5,7 @@ import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
+import { useWakeLock } from '@/hooks/useWakeLock';
 
 const IntervalTimer: React.FC = () => {
   // Timer settings
@@ -22,6 +23,9 @@ const IntervalTimer: React.FC = () => {
   
   // UI state
   const [showSettings, setShowSettings] = useState(false);
+  
+  // Wake lock to keep screen active during workout
+  useWakeLock(isRunning);
 
   // Calculate total rounds based on settings
   useEffect(() => {
