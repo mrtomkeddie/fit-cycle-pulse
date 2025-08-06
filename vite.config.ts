@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/fit-cycle-pulse/' : '/',
+  base: '/fit-cycle-pulse/',
   server: {
     host: "::",
     port: 8080,
