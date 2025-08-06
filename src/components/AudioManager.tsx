@@ -17,6 +17,9 @@ const AudioManager: React.FC<AudioManagerProps> = ({
 }) => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const lastBeepTimeRef = useRef<number>(0);
+  const phaseStartTimeRef = useRef<number>(0);
+  const scheduledBeepsRef = useRef<Set<number>>(new Set());
+  const checkTimerRef = useRef<number | null>(null);
 
   // Initialize audio context
   useEffect(() => {
@@ -65,7 +68,7 @@ const AudioManager: React.FC<AudioManagerProps> = ({
     }
   }, [isWorkoutComplete]);
 
-  // Handle countdown beeps
+  // Handle countdown beeps - play immediately when timeLeft changes to countdown values
   useEffect(() => {
     if (!isRunning || isWorkoutComplete) return;
 
