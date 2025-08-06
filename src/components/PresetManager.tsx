@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, Check, X } from 'lucide-react';
+import { Plus, Trash2, Check, X, Edit } from 'lucide-react';
 import { usePresets } from '@/hooks/usePresets';
 import { WorkoutPreset, Exercise } from '@/types/presets';
 import NumberInput from './NumberInput';
@@ -14,8 +14,9 @@ interface PresetManagerProps {
 }
 
 const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
-  const { presets, selectedPresetId, selectPreset, addPreset, deletePreset } = usePresets();
+  const { presets, selectedPresetId, selectPreset, addPreset, updatePreset, deletePreset } = usePresets();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingPresetId, setEditingPresetId] = useState<string | null>(null);
   const [newPreset, setNewPreset] = useState<Partial<WorkoutPreset>>({
     name: '',
     workSeconds: 20,
@@ -31,17 +32,36 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
       return;
     }
 
-    const preset: WorkoutPreset = {
-      id: `preset-${Date.now()}`,
-      name: newPreset.name,
-      workSeconds: newPreset.workSeconds || 20,
-      restSeconds: newPreset.restSeconds || 40,
-      totalMinutes: newPreset.totalMinutes || 20,
-      exercises: newPreset.exercises,
-    };
+    if (editingPresetId) {
+      // Update existing preset
+      const preset: WorkoutPreset = {
+        id: editingPresetId,
+        name: newPreset.name,
+        workSeconds: newPreset.workSeconds || 20,
+        restSeconds: newPreset.restSeconds || 40,
+        totalMinutes: newPreset.totalMinutes || 20,
+        exercises: newPreset.exercises,
+      };
+      updatePreset(editingPresetId, preset);
+      setEditingPresetId(null);
+    } else {
+      // Create new preset
+      const preset: WorkoutPreset = {
+        id: `preset-${Date.now()}`,
+        name: newPreset.name,
+        workSeconds: newPreset.workSeconds || 20,
+        restSeconds: newPreset.restSeconds || 40,
+        totalMinutes: newPreset.totalMinutes || 20,
+        exercises: newPreset.exercises,
+      };
+      addPreset(preset);
+    }
 
-    addPreset(preset);
     setShowCreateForm(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
     setNewPreset({
       name: '',
       workSeconds: 20,
@@ -50,6 +70,24 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
       exercises: [],
     });
     setExerciseInput('');
+    setEditingPresetId(null);
+  };
+
+  const startEditing = (preset: WorkoutPreset) => {
+    setNewPreset({
+      name: preset.name,
+      workSeconds: preset.workSeconds,
+      restSeconds: preset.restSeconds,
+      totalMinutes: preset.totalMinutes,
+      exercises: [...preset.exercises],
+    });
+    setEditingPresetId(preset.id);
+    setShowCreateForm(true);
+  };
+
+  const cancelEditing = () => {
+    setShowCreateForm(false);
+    resetForm();
   };
 
   const addExercise = () => {
@@ -80,7 +118,10 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-foreground">Workout Presets</h3>
         <Button
-          onClick={() => setShowCreateForm(!showCreateForm)}
+          onClick={() => {
+            resetForm();
+            setShowCreateForm(!showCreateForm);
+          }}
           size="sm"
           className="bg-primary hover:bg-primary/90"
         >
@@ -110,14 +151,28 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
                 {preset.name} ({preset.exercises.length} exercises)
               </Button>
               {!preset.id.startsWith('default-') && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => deletePreset(preset.id)}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => startEditing(preset)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Delete "${preset.name}" preset?`)) {
+                        deletePreset(preset.id);
+                      }
+                    }}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </>
               )}
             </div>
           ))}
@@ -127,19 +182,19 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
       {/* Create new preset form */}
       {showCreateForm && (
         <Card className="p-4 border-border">
-          <div className="space-y-4">
+            <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-foreground">Create New Preset</h4>
+              <h4 className="font-medium text-foreground">
+                {editingPresetId ? 'Edit Preset' : 'Create New Preset'}
+              </h4>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowCreateForm(false)}
+                onClick={cancelEditing}
               >
                 <X className="h-4 w-4" />
               </Button>
-            </div>
-            
-            <div className="space-y-3">
+            </div>            <div className="space-y-3">
               <div>
                 <Label htmlFor="preset-name">Preset Name</Label>
                 <Input
@@ -230,7 +285,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
                   disabled={!newPreset.name || !newPreset.exercises || newPreset.exercises.length === 0}
                 >
                   <Check className="h-4 w-4 mr-1" />
-                  Create Preset
+                  {editingPresetId ? 'Update Preset' : 'Create Preset'}
                 </Button>
               </div>
             </div>
