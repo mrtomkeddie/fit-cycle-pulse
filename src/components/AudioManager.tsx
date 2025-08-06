@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AudioManagerProps {
   isRunning: boolean;
@@ -15,75 +15,115 @@ const AudioManager: React.FC<AudioManagerProps> = ({
   isLastRest,
   isWorkoutComplete
 }) => {
+  const [audioEnabled, setAudioEnabled] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const lastBeepTimeRef = useRef<number>(0);
-  const phaseStartTimeRef = useRef<number>(0);
-  const scheduledBeepsRef = useRef<Set<number>>(new Set());
-  const checkTimerRef = useRef<number | null>(null);
 
-  // Initialize audio context
-  useEffect(() => {
-    const initAudio = () => {
+  // Initialize or resume audio context
+  const initAudio = async () => {
+    try {
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
+      
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+      
+      setAudioEnabled(true);
+    } catch (error) {
+      console.error('Audio initialization failed:', error);
+    }
+  };
+
+  // Initialize audio when timer starts
+  useEffect(() => {
+    if (isRunning && !audioEnabled) {
+      initAudio();
+    }
+  }, [isRunning, audioEnabled]);
+
+  // Play beep sound
+  const playBeep = async (frequency = 800, duration = 200) => {
+    try {
+      if (!audioContextRef.current || !audioEnabled) return;
+
+      // Create a new audio context if the current one is closed
+      if (audioContextRef.current.state === 'closed') {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+
+      // Resume the audio context if it's suspended
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+
+      const oscillator = audioContextRef.current.createOscillator();
+      const gainNode = audioContextRef.current.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContextRef.current.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      const now = audioContextRef.current.currentTime;
+      gainNode.gain.setValueAtTime(0.5, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration / 1000);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration / 1000);
+    } catch (error) {
+      console.error('Error playing beep:', error);
+    }
+  };
+
+  // Handle countdown beeps
+  useEffect(() => {
+    const playCountdownBeep = async () => {
+      if (!audioEnabled || !isRunning || isWorkoutComplete) return;
+
+      const shouldBeep = () => {
+        if (isWorkPhase && timeLeft <= 5 && timeLeft > 0) return true;
+        if (!isWorkPhase && !isLastRest && timeLeft <= 5 && timeLeft > 0) return true;
+        if (!isWorkPhase && isLastRest && timeLeft <= 10 && timeLeft > 0) return true;
+        return false;
+      };
+
+      if (shouldBeep() && timeLeft !== lastBeepTimeRef.current) {
+        await playBeep(600, 150);
+        lastBeepTimeRef.current = timeLeft;
+      }
     };
 
-    initAudio();
+    playCountdownBeep();
+  }, [isRunning, timeLeft, isWorkPhase, isLastRest, isWorkoutComplete, audioEnabled]);
 
+  // Handle workout complete beeps
+  useEffect(() => {
+    const playCompleteBeeps = async () => {
+      if (!audioEnabled || !isWorkoutComplete) return;
+      
+      await playBeep(1000, 150);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      await playBeep(1000, 150);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      await playBeep(1000, 150);
+    };
+
+    if (isWorkoutComplete) {
+      playCompleteBeeps();
+    }
+  }, [isWorkoutComplete, audioEnabled]);
+
+  // Cleanup audio context when component unmounts
+  useEffect(() => {
     return () => {
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
     };
   }, []);
-
-  // Play beep sound
-  const playBeep = (frequency = 800, duration = 200) => {
-    if (!audioContextRef.current) return;
-
-    const oscillator = audioContextRef.current.createOscillator();
-    const gainNode = audioContextRef.current.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContextRef.current.destination);
-
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
-
-    gainNode.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + duration / 1000);
-
-    oscillator.start(audioContextRef.current.currentTime);
-    oscillator.stop(audioContextRef.current.currentTime + duration / 1000);
-  };
-
-  // Handle workout complete beeps
-  useEffect(() => {
-    if (isWorkoutComplete) {
-      // Play three quick beeps
-      setTimeout(() => playBeep(1000, 150), 0);
-      setTimeout(() => playBeep(1000, 150), 200);
-      setTimeout(() => playBeep(1000, 150), 400);
-    }
-  }, [isWorkoutComplete]);
-
-  // Handle countdown beeps - play immediately when timeLeft changes to countdown values
-  useEffect(() => {
-    if (!isRunning || isWorkoutComplete) return;
-
-    const shouldBeep = () => {
-      if (isWorkPhase && timeLeft <= 5 && timeLeft > 0) return true;
-      if (!isWorkPhase && !isLastRest && timeLeft <= 5 && timeLeft > 0) return true;
-      if (!isWorkPhase && isLastRest && timeLeft <= 10 && timeLeft > 0) return true;
-      return false;
-    };
-
-    if (shouldBeep() && timeLeft !== lastBeepTimeRef.current) {
-      playBeep(600, 150);
-      lastBeepTimeRef.current = timeLeft;
-    }
-  }, [isRunning, timeLeft, isWorkPhase, isLastRest, isWorkoutComplete]);
 
   return null;
 };

@@ -5,27 +5,25 @@ import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
-import { useWakeLock } from '@/hooks/useWakeLock';
 
-const IntervalTimer: React.FC = () => {
+const HIITTimer: React.FC = () => {
   // Timer settings
   const [totalMinutes, setTotalMinutes] = useState(20); // Total workout time in minutes
   const [workSeconds, setWorkSeconds] = useState(20); // Work duration in seconds
   const restSeconds = 60 - workSeconds; // Rest duration automatically calculated
+  const totalRounds = totalMinutes; // One round per minute
   
   // Timer state
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(workSeconds);
   const [isWorkPhase, setIsWorkPhase] = useState(true);
   const [currentRound, setCurrentRound] = useState(1);
-  const totalRounds = totalMinutes; // One round per minute
   const [isWorkoutComplete, setIsWorkoutComplete] = useState(false);
   
   // UI state
   const [showSettings, setShowSettings] = useState(false);
-  
-  // Wake lock to keep screen active during workout
-  useWakeLock(isRunning);
+
+  // No need to calculate total rounds - it's fixed
 
   // Reset timer to initial state
   const resetTimer = useCallback(() => {
@@ -73,7 +71,7 @@ const IntervalTimer: React.FC = () => {
   // Reset when settings change
   useEffect(() => {
     resetTimer();
-  }, [workSeconds, restSeconds, totalMinutes, resetTimer]);
+  }, [workSeconds, restSeconds, resetTimer]);
 
   // Format time display
   const formatTime = (seconds: number) => {
@@ -92,29 +90,31 @@ const IntervalTimer: React.FC = () => {
   const isLastRest = !isWorkPhase && currentRound === totalRounds;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start">
+      {/* Safe area spacer for mobile */}
+      <div className="w-full h-[env(safe-area-inset-top)] bg-background" />
+      
+      <div className="w-full max-w-md space-y-6 p-4">
         {/* Header with settings */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-4">
           <img 
             src="/fit-cycle-pulse/icons/logo.png" 
-            alt="Fit Cycle Pulse" 
-            className="h-10 w-auto"
+            alt="Interval Timer" 
+            className="h-8 w-auto" 
           />
           <Button
             variant="ghost"
-            size="lg"
+            size="sm"
             onClick={() => setShowSettings(true)}
-            className="h-16 w-16 text-muted-foreground hover:text-foreground flex items-center justify-center p-0"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <Settings className="h-10 w-10" />
+            <Settings className="h-5 w-5" />
           </Button>
         </div>
 
         {/* Main timer display */}
-        <Card className="p-8 bg-card border-border shadow-timer">
-          <div className="flex flex-col items-center space-y-8">
+        <Card className="p-6 bg-card border-border shadow-timer relative">
+          <div className="flex flex-col items-center space-y-6">
             
             {/* Circular progress timer */}
             <CircularProgress
@@ -144,11 +144,11 @@ const IntervalTimer: React.FC = () => {
             </div>
 
             {/* Control buttons */}
-            <div className="flex gap-6">
+            <div className="flex gap-4">
               <Button
                 onClick={() => setIsRunning(!isRunning)}
                 disabled={isWorkoutComplete}
-                className={`h-32 w-32 text-xl font-semibold flex flex-col items-center justify-center gap-2 ${
+                className={`h-16 w-32 text-lg font-semibold ${
                   isWorkPhase 
                     ? 'bg-work hover:bg-work/90 text-white' 
                     : 'bg-rest hover:bg-rest/90 text-white'
@@ -156,13 +156,13 @@ const IntervalTimer: React.FC = () => {
               >
                 {isRunning ? (
                   <>
-                    <Pause className="h-12 w-12" />
-                    <span>Pause</span>
+                    <Pause className="h-6 w-6 mr-2" />
+                    Pause
                   </>
                 ) : (
                   <>
-                    <Play className="h-12 w-12" />
-                    <span>{isWorkoutComplete ? 'Restart' : 'Start'}</span>
+                    <Play className="h-6 w-6 mr-2" />
+                    {isWorkoutComplete ? 'Restart' : 'Start'}
                   </>
                 )}
               </Button>
@@ -170,21 +170,21 @@ const IntervalTimer: React.FC = () => {
               <Button
                 onClick={resetTimer}
                 variant="outline"
-                className="h-32 w-32 text-xl border-border text-foreground hover:bg-secondary flex flex-col items-center justify-center gap-2"
+                className="h-16 w-32 text-lg border-border text-foreground hover:bg-secondary"
               >
-                <RotateCcw className="h-12 w-12" />
-                <span>Reset</span>
+                <RotateCcw className="h-6 w-6 mr-2" />
+                Reset
               </Button>
             </div>
           </div>
         </Card>
 
         {/* Workout summary */}
-        <Card className="p-4 bg-card border-border">
-          <div className="grid grid-cols-3 gap-4 text-center">
+        <Card className="p-4 bg-card border-border shadow-sm">
+          <div className="grid grid-cols-3 gap-3 text-center">
             <div>
-              <div className="text-sm text-muted-foreground">Total Time</div>
-              <div className="font-semibold text-foreground">{totalMinutes}m</div>
+              <div className="text-sm text-muted-foreground">Rounds</div>
+              <div className="font-semibold text-foreground">{totalRounds}</div>
             </div>
             <div>
               <div className="text-sm text-muted-foreground">Work</div>
@@ -221,4 +221,4 @@ const IntervalTimer: React.FC = () => {
   );
 };
 
-export default IntervalTimer;
+export default HIITTimer;

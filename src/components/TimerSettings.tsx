@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Settings, X } from 'lucide-react';
+import NumberInput from './NumberInput';
 
 interface TimerSettingsProps {
   isOpen: boolean;
@@ -13,7 +13,6 @@ interface TimerSettingsProps {
   restSeconds: number;
   onTotalMinutesChange: (value: number) => void;
   onWorkSecondsChange: (value: number) => void;
-  onRestSecondsChange: (value: number) => void;
 }
 
 const TimerSettings: React.FC<TimerSettingsProps> = ({
@@ -24,7 +23,6 @@ const TimerSettings: React.FC<TimerSettingsProps> = ({
   restSeconds,
   onTotalMinutesChange,
   onWorkSecondsChange,
-  onRestSecondsChange,
 }) => {
   if (!isOpen) return null;
 
@@ -52,45 +50,29 @@ const TimerSettings: React.FC<TimerSettingsProps> = ({
               <Label htmlFor="total-time" className="text-sm font-medium text-foreground">
                 Total Workout Time (minutes)
               </Label>
-              <Input
+              <NumberInput
                 id="total-time"
-                type="number"
-                min="1"
-                max="60"
+                min={1}
+                max={60}
                 value={totalMinutes}
-                onChange={(e) => onTotalMinutesChange(parseInt(e.target.value) || 1)}
-                className="bg-input border-border text-foreground"
+                onChange={onTotalMinutesChange}
               />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="work-time" className="text-sm font-medium text-foreground">
-                Work Interval (seconds)
+                Work Time Per Round (seconds)
               </Label>
-              <Input
+              <NumberInput
                 id="work-time"
-                type="number"
-                min="5"
-                max="300"
+                min={10}
+                max={50}
                 value={workSeconds}
-                onChange={(e) => onWorkSecondsChange(parseInt(e.target.value) || 5)}
-                className="bg-input border-border text-foreground"
+                onChange={onWorkSecondsChange}
               />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="rest-time" className="text-sm font-medium text-foreground">
-                Rest Interval (seconds)
-              </Label>
-              <Input
-                id="rest-time"
-                type="number"
-                min="5"
-                max="300"
-                value={restSeconds}
-                onChange={(e) => onRestSecondsChange(parseInt(e.target.value) || 5)}
-                className="bg-input border-border text-foreground"
-              />
+              <div className="text-sm text-muted-foreground">
+                Rest time: {restSeconds} seconds
+              </div>
             </div>
           </div>
           

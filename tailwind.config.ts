@@ -17,8 +17,17 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+		fontFamily: {
+			sans: ['Poppins', 'system-ui', 'sans-serif'],
+		},
 		extend: {
 			colors: {
+				purple: {
+					500: 'hsl(270, 80%, 60%)',
+				},
+				pink: {
+					500: 'hsl(330, 80%, 60%)',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
