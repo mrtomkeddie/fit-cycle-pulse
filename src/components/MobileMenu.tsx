@@ -45,7 +45,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px] pt-safe-top pb-safe-bottom">
+      <SheetContent 
+        side="right" 
+        className="w-[300px] sm:w-[400px] pt-safe-top pb-safe-bottom bg-background border-l border-border"
+      >
         <div className="pt-16 h-full flex flex-col">
           {/* Menu Items */}
           <div className="flex-1 space-y-2">
