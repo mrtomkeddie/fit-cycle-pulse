@@ -147,7 +147,7 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       {/* Logo in top-left */}
-      <div className="absolute top-4 left-4">
+      <div className="absolute top-4 left-4 pt-safe-top pl-safe-left">
         <img 
           src="/workoutimer/icons/logo.png" 
           alt="Fit Cycle Pulse" 

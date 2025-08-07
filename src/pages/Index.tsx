@@ -4,12 +4,9 @@ import InstallPrompt from '../components/InstallPrompt';
 import AuthModal from '../components/AuthModal';
 import MobileMenu from '../components/MobileMenu';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
-import { User } from 'lucide-react';
 
 const Index = () => {
   const { user, isLoading } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
 
@@ -27,34 +24,7 @@ const Index = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-foreground">WorkoutTimer</h1>
-            <p className="text-muted-foreground">Your personal interval timer for effective workouts</p>
-          </div>
-          
-          <div className="space-y-4">
-            <Button 
-              onClick={() => setShowAuthModal(true)}
-              className="bg-primary hover:bg-primary/90"
-              size="lg"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Get Started
-            </Button>
-            
-            <div className="text-xs text-muted-foreground">
-              {import.meta.env.VITE_SUPABASE_URL 
-                ? '🔐 Real authentication with Supabase' 
-                : '⚠️ Demo mode: Configure Supabase for real authentication'
-              }
-            </div>
-          </div>
-        </div>
-
-        {showAuthModal && (
-          <AuthModal onClose={() => setShowAuthModal(false)} />
-        )}
+        <AuthModal onClose={() => {}} />
       </div>
     );
   }

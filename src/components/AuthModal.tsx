@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface AuthModalProps {
@@ -45,17 +45,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-card border-border shadow-timer">
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-foreground">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
-            </h2>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-5 w-5" />
-            </Button>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+             <Card className="w-full max-w-md bg-card border-border shadow-timer">
+         <div className="p-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <img 
+              src="/workoutimer/icons/logo.png" 
+              alt="Fit Cycle Pulse" 
+              className="h-12 w-auto mx-auto"
+            />
           </div>
 
           {/* Form */}
@@ -159,15 +158,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             </Button>
           </div>
 
-          {/* Note about Supabase */}
-          <div className="mt-4 p-3 bg-muted/50 rounded-md">
-            <p className="text-xs text-muted-foreground text-center">
-              {import.meta.env.VITE_SUPABASE_URL 
-                ? '🔐 Real authentication with Supabase' 
-                : '⚠️ Demo mode: Configure Supabase for real authentication'
-              }
-            </p>
-          </div>
+
         </div>
       </Card>
     </div>

@@ -43,7 +43,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
         <Button
           variant="ghost"
           size="sm"
-          className="fixed top-4 right-4 z-40"
+          className="fixed top-4 right-4 z-40 pt-safe-top pr-safe-right"
         >
           <Menu className="h-5 w-5" />
         </Button>
