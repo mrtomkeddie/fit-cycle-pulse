@@ -2,8 +2,13 @@ import { createClient } from '@supabase/supabase-js'
 import { WorkoutPreset, PresetStore } from '@/types/presets'
 
 // Supabase configuration
-const supabaseUrl = process.env.VITE_SUPABASE_URL || ''
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || ''
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+
+// Debug: Check if environment variables are loaded
+console.log('🔍 Supabase Environment Check:')
+console.log('URL:', supabaseUrl ? '✅ Loaded' : '❌ Missing')
+console.log('Key:', supabaseKey ? '✅ Loaded' : '❌ Missing')
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -63,38 +68,62 @@ export const convertFromDatabase = (dbPreset: DatabasePreset): WorkoutPreset => 
 export class SupabasePresetService {
   static async getPresets(): Promise<WorkoutPreset[]> {
     try {
+      console.log('🔄 SupabasePresetService.getPresets starting...')
       const { data, error } = await supabase
         .from('workout_presets')
         .select('*')
         .order('created_at', { ascending: false })
 
+      console.log('🔄 Supabase select response - data:', data, 'error:', error)
+
       if (error) {
-        console.error('Error fetching presets from Supabase:', error)
+        console.error('❌ Error fetching presets from Supabase:', error)
+        console.error('❌ Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
         return []
       }
 
-      return data?.map(convertFromDatabase) || []
+      const presets = data?.map(convertFromDatabase) || []
+      console.log('✅ Successfully fetched presets:', presets)
+      return presets
     } catch (error) {
-      console.error('Error fetching presets:', error)
+      console.error('❌ Exception while fetching presets:', error)
       return []
     }
   }
 
   static async savePreset(preset: WorkoutPreset): Promise<boolean> {
     try {
+      console.log('🔄 SupabasePresetService.savePreset starting with preset:', preset)
       const dbPreset = convertToDatabase(preset)
-      const { error } = await supabase
+      console.log('🔄 Converted to database format:', dbPreset)
+      
+      const { data, error } = await supabase
         .from('workout_presets')
         .upsert(dbPreset)
+        .select()
+
+      console.log('🔄 Supabase upsert response - data:', data, 'error:', error)
 
       if (error) {
-        console.error('Error saving preset to Supabase:', error)
+        console.error('❌ Error saving preset to Supabase:', error)
+        console.error('❌ Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
         return false
       }
 
+      console.log('✅ Successfully saved preset to Supabase!')
       return true
     } catch (error) {
-      console.error('Error saving preset:', error)
+      console.error('❌ Exception while saving preset:', error)
       return false
     }
   }

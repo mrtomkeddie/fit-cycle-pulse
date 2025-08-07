@@ -5,7 +5,7 @@ import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
-import { usePresets } from '@/hooks/usePresets';
+import { usePresets } from '@/hooks/usePresetsHybrid';
 import { Exercise } from '@/types/presets';
 
 const HIITTimer: React.FC = () => {

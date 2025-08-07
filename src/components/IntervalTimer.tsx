@@ -6,7 +6,7 @@ import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
 import { useWakeLock } from '@/hooks/useWakeLock';
-import { usePresets } from '@/hooks/usePresets';
+import { usePresets } from '@/hooks/usePresetsHybrid';
 
 const IntervalTimer: React.FC = () => {
   // Preset system

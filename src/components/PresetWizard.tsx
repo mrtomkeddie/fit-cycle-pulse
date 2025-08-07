@@ -273,8 +273,9 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
         return (
           <div className="space-y-4 p-3">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Warm-up (Optional)</h3>
-              <p className="text-sm text-muted-foreground">Add a warm-up period before your workout</p>
+              <h3 className="text-lg font-semibold text-foreground">Warm-up (Optional) - UPDATED!</h3>
+              <p className="text-sm text-muted-foreground">Add a warm-up period before your workout - NEW MOBILE DESIGN</p>
+              {/* Updated mobile-friendly controls */}
             </div>
             
             <div className="flex items-center space-x-2">
@@ -288,34 +289,44 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
 
             {includeWarmUp && (
               <div className="space-y-4 mt-4">
-                <div>
-                  <Label>Warm-up Duration</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-1">
-                    <div>
-                      <Label htmlFor="warmup-minutes" className="text-xs">Minutes</Label>
-                      <NumberInput
-                        id="warmup-minutes"
-                        min={0}
-                        max={10}
-                        value={Math.floor((presetData.warmUpDuration || 300) / 60)}
-                        onChange={value => setPresetData(prev => ({ 
+                <div className="space-y-1">
+                  <Label className="text-xs font-medium flex items-center gap-1">
+                    <Zap className="h-3 w-3 text-orange-500" />
+                    Warm-up Duration
+                  </Label>
+                  <div className="bg-muted/50 rounded p-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPresetData(prev => ({ 
                           ...prev, 
-                          warmUpDuration: value * 60 + ((prev.warmUpDuration || 300) % 60)
+                          warmUpDuration: Math.max(0, (prev.warmUpDuration || 300) - 30)
                         }))}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="warmup-seconds" className="text-xs">Seconds</Label>
-                      <NumberInput
-                        id="warmup-seconds"
-                        min={0}
-                        max={59}
-                        value={(presetData.warmUpDuration || 300) % 60}
-                        onChange={value => setPresetData(prev => ({ 
+                        className="h-8 w-8 rounded-full text-xs"
+                        disabled={(presetData.warmUpDuration || 300) <= 0}
+                      >
+                        −
+                      </Button>
+                      <div className="flex-1 text-center">
+                        <div className="text-xl font-bold text-foreground">
+                          {Math.floor((presetData.warmUpDuration || 300) / 60)}:
+                          {String((presetData.warmUpDuration || 300) % 60).padStart(2, '0')}
+                        </div>
+                        <div className="text-xs text-muted-foreground">min:sec</div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPresetData(prev => ({ 
                           ...prev, 
-                          warmUpDuration: Math.floor((prev.warmUpDuration || 300) / 60) * 60 + value
+                          warmUpDuration: Math.min(600, (prev.warmUpDuration || 300) + 30)
                         }))}
-                      />
+                        className="h-8 w-8 rounded-full text-xs"
+                        disabled={(presetData.warmUpDuration || 300) >= 600}
+                      >
+                        +
+                      </Button>
                     </div>
                   </div>
                 </div>
