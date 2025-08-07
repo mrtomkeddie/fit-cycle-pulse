@@ -209,42 +209,111 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
 
       case 'timing':
         return (
-          <div className="space-y-4 p-3">
+          <div className="space-y-6 p-3">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-foreground">Set your timing</h3>
               <p className="text-sm text-muted-foreground">Configure work, rest, and total workout duration</p>
             </div>
             
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="work-seconds">Work (seconds)</Label>
-                <NumberInput
-                  id="work-seconds"
-                  min={10}
-                  max={120}
-                  value={presetData.workSeconds || 20}
-                  onChange={value => setPresetData(prev => ({ ...prev, workSeconds: value }))}
-                />
+            {/* Mobile-first vertical layout */}
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="work-seconds" className="text-base font-medium flex items-center gap-2">
+                  <Timer className="h-4 w-4 text-primary" />
+                  Work Duration
+                </Label>
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex items-center justify-center gap-4">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, workSeconds: Math.max(10, (prev.workSeconds || 20) - 5) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.workSeconds || 20) <= 10}
+                    >
+                      −
+                    </Button>
+                    <div className="flex-1 text-center">
+                      <div className="text-3xl font-bold text-foreground">{presetData.workSeconds || 20}</div>
+                      <div className="text-sm text-muted-foreground">seconds</div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, workSeconds: Math.min(120, (prev.workSeconds || 20) + 5) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.workSeconds || 20) >= 120}
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="rest-seconds">Rest (seconds)</Label>
-                <NumberInput
-                  id="rest-seconds"
-                  min={5}
-                  max={180}
-                  value={presetData.restSeconds || 40}
-                  onChange={value => setPresetData(prev => ({ ...prev, restSeconds: value }))}
-                />
+
+              <div className="space-y-3">
+                <Label htmlFor="rest-seconds" className="text-base font-medium flex items-center gap-2">
+                  <Timer className="h-4 w-4 text-blue-500" />
+                  Rest Duration
+                </Label>
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex items-center justify-center gap-4">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, restSeconds: Math.max(5, (prev.restSeconds || 40) - 5) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.restSeconds || 40) <= 5}
+                    >
+                      −
+                    </Button>
+                    <div className="flex-1 text-center">
+                      <div className="text-3xl font-bold text-foreground">{presetData.restSeconds || 40}</div>
+                      <div className="text-sm text-muted-foreground">seconds</div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, restSeconds: Math.min(180, (prev.restSeconds || 40) + 5) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.restSeconds || 40) >= 180}
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="total-minutes">Total (minutes)</Label>
-                <NumberInput
-                  id="total-minutes"
-                  min={1}
-                  max={60}
-                  value={presetData.totalMinutes || 20}
-                  onChange={value => setPresetData(prev => ({ ...prev, totalMinutes: value }))}
-                />
+
+              <div className="space-y-3">
+                <Label htmlFor="total-minutes" className="text-base font-medium flex items-center gap-2">
+                  <Timer className="h-4 w-4 text-green-500" />
+                  Total Workout Duration
+                </Label>
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex items-center justify-center gap-4">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, totalMinutes: Math.max(1, (prev.totalMinutes || 20) - 1) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.totalMinutes || 20) <= 1}
+                    >
+                      −
+                    </Button>
+                    <div className="flex-1 text-center">
+                      <div className="text-3xl font-bold text-foreground">{presetData.totalMinutes || 20}</div>
+                      <div className="text-sm text-muted-foreground">minutes</div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setPresetData(prev => ({ ...prev, totalMinutes: Math.min(60, (prev.totalMinutes || 20) + 1) }))}
+                      className="h-12 w-12 rounded-full"
+                      disabled={(presetData.totalMinutes || 20) >= 60}
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
