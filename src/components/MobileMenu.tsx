@@ -50,51 +50,62 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
         className="w-[300px] sm:w-[400px] pt-safe-top pb-safe-bottom bg-background border-l border-border"
       >
         <div className="pt-16 h-full flex flex-col">
+          {/* Header */}
+          <div className="px-2 pb-6">
+            <h2 className="text-lg font-semibold text-foreground">Menu</h2>
+          </div>
+
           {/* Menu Items */}
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 space-y-1 px-2">
             <Button
               variant="ghost"
-              className="w-full justify-start"
+              size="lg"
+              className="w-full justify-start h-14 px-4 text-base font-medium hover:bg-accent/50"
               onClick={handleSettings}
             >
-              <Settings className="h-4 w-4 mr-3" />
+              <Settings className="h-5 w-5 mr-4" />
               Timer Settings
             </Button>
             
             <Button
               variant="ghost"
-              className="w-full justify-start"
+              size="lg"
+              className="w-full justify-start h-14 px-4 text-base font-medium hover:bg-accent/50"
               onClick={handlePresets}
             >
-              <Dumbbell className="h-4 w-4 mr-3" />
+              <Dumbbell className="h-5 w-5 mr-4" />
               Workout Presets
-            </Button>
-
-            {/* Divider */}
-            <div className="border-t border-border my-4" />
-
-            {/* Logout */}
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-destructive hover:text-destructive"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4 mr-3" />
-              Sign Out
             </Button>
           </div>
 
-          {/* User Info at Bottom */}
-          <Card className="p-4 mt-4 mb-4">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-foreground">
-                Welcome, {user?.name}!
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {user?.email}
-              </p>
-            </div>
-          </Card>
+          {/* Bottom Section */}
+          <div className="mt-auto space-y-4 px-2 pb-4">
+            {/* Divider */}
+            <div className="border-t border-border" />
+
+            {/* Logout Button */}
+            <Button
+              variant="ghost"
+              size="lg"
+              className="w-full justify-start h-14 px-4 text-base font-medium text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5 mr-4" />
+              Sign Out
+            </Button>
+
+            {/* User Info Card */}
+            <Card className="p-4 bg-accent/20 border-accent/20">
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
+              </div>
+            </Card>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
