@@ -40,6 +40,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       onClose();
     } else {
       setError(result.error || (isLogin ? 'Login failed' : 'Signup failed'));
+      // Don't clear the form on error - let user fix and retry
     }
   };
 

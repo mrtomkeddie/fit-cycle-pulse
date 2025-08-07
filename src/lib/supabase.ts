@@ -13,6 +13,11 @@ console.log('Key:', supabaseKey ? '✅ Loaded' : '❌ Missing')
 // Create a mock client if environment variables are missing
 const createMockClient = () => {
   console.warn('⚠️ Creating mock Supabase client - no environment variables found')
+  
+  // Mock user data for demo
+  let mockUser = null;
+  let mockSession = null;
+  
   return {
     from: () => ({
       select: () => ({ data: null, error: { message: 'Supabase not configured' } }),
@@ -26,19 +31,64 @@ const createMockClient = () => {
       limit: () => ({ data: null, error: { message: 'Supabase not configured' } }),
     }),
     auth: {
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      onAuthStateChange: (callback: any) => ({
-        data: { subscription: { unsubscribe: () => {} } }
+      getSession: () => Promise.resolve({ 
+        data: { session: mockSession }, 
+        error: null 
       }),
-      signInWithPassword: () => Promise.resolve({ 
-        data: null, 
-        error: { message: 'Supabase not configured' } 
-      }),
-      signUp: () => Promise.resolve({ 
-        data: null, 
-        error: { message: 'Supabase not configured' } 
-      }),
-      signOut: () => Promise.resolve({ error: null }),
+      onAuthStateChange: (callback: any) => {
+        // Simulate auth state change
+        if (mockUser) {
+          setTimeout(() => callback('SIGNED_IN', { user: mockUser }), 100);
+        }
+        return {
+          data: { subscription: { unsubscribe: () => {} } }
+        }
+      },
+      signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
+        // Demo authentication - accept any email/password
+        if (email && password) {
+          mockUser = {
+            id: 'demo-user-id',
+            email: email,
+            user_metadata: { name: email.split('@')[0] }
+          };
+          mockSession = { user: mockUser };
+          return { 
+            data: { user: mockUser, session: mockSession }, 
+            error: null 
+          };
+        } else {
+          return { 
+            data: null, 
+            error: { message: 'Please enter email and password' } 
+          };
+        }
+      },
+      signUp: async ({ email, password, options }: { email: string; password: string; options?: any }) => {
+        // Demo signup - accept any email/password
+        if (email && password) {
+          mockUser = {
+            id: 'demo-user-id',
+            email: email,
+            user_metadata: { name: options?.data?.name || email.split('@')[0] }
+          };
+          mockSession = { user: mockUser };
+          return { 
+            data: { user: mockUser, session: mockSession }, 
+            error: null 
+          };
+        } else {
+          return { 
+            data: null, 
+            error: { message: 'Please enter email and password' } 
+          };
+        }
+      },
+      signOut: async () => {
+        mockUser = null;
+        mockSession = null;
+        return { error: null };
+      },
     }
   }
 }
