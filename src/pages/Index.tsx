@@ -22,11 +22,7 @@ const Index = () => {
   }
 
   if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <AuthModal onClose={() => {}} />
-      </div>
-    );
+    return <AuthModal onClose={() => {}} />;
   }
 
   return (

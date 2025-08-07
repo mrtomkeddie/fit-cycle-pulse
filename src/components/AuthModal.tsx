@@ -45,15 +45,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-             <Card className="w-full max-w-md bg-card border-border shadow-timer">
-         <div className="p-8">
+    <div className="h-screen h-dvh bg-background flex items-center justify-center p-4 overflow-hidden">
+      <Card className="w-full max-w-md bg-card border-border shadow-timer max-h-[90vh] overflow-y-auto">
+        <div className="p-6 sm:p-8">
           {/* Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <img 
               src="/workoutimer/icons/logo.png" 
               alt="Fit Cycle Pulse" 
-              className="h-12 w-auto mx-auto"
+              className="h-10 sm:h-12 w-auto mx-auto"
             />
           </div>
 
@@ -138,7 +138,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           </form>
 
           {/* Toggle */}
-          <div className="mt-6 text-center">
+          <div className="mt-4 sm:mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
             </p>
