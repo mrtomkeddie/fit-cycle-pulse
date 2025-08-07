@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { 
   Menu, 
   Settings, 
   Dumbbell, 
-  LogOut, 
-  User,
-  Timer,
-  X 
+  LogOut
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -43,53 +40,32 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
         <Button
           variant="ghost"
           size="sm"
-          className="fixed top-4 right-4 z-40 pt-safe-top pr-safe-right"
+          className="fixed top-8 right-4 z-40 pt-safe-top pr-safe-right"
         >
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] sm:w-[400px] pt-safe-top pb-safe-bottom">
-        <div className="pt-4">
-          <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              {user?.name || 'User'}
-            </SheetTitle>
-          </SheetHeader>
-          
-          <div className="mt-6 space-y-4 pb-8">
-            {/* User Info */}
-            <Card className="p-4">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">
-                  Welcome, {user?.name}!
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {user?.email}
-                </p>
-              </div>
-            </Card>
-
-            {/* Menu Items */}
-            <div className="space-y-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={handleSettings}
-              >
-                <Settings className="h-4 w-4 mr-3" />
-                Timer Settings
-              </Button>
-              
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={handlePresets}
-              >
-                <Dumbbell className="h-4 w-4 mr-3" />
-                Workout Presets
-              </Button>
-            </div>
+        <div className="pt-8 h-full flex flex-col">
+          {/* Menu Items */}
+          <div className="flex-1 space-y-2">
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={handleSettings}
+            >
+              <Settings className="h-4 w-4 mr-3" />
+              Timer Settings
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={handlePresets}
+            >
+              <Dumbbell className="h-4 w-4 mr-3" />
+              Workout Presets
+            </Button>
 
             {/* Divider */}
             <div className="border-t border-border my-4" />
@@ -104,6 +80,18 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
               Sign Out
             </Button>
           </div>
+
+          {/* User Info at Bottom */}
+          <Card className="p-4 mt-4 mb-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Welcome, {user?.name}!
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {user?.email}
+              </p>
+            </div>
+          </Card>
         </div>
       </SheetContent>
     </Sheet>
