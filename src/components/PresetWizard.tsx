@@ -159,39 +159,39 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
 
       case 'timing':
         return (
-          <div className="space-y-6 p-3">
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Set your timing</h3>
-              <p className="text-sm text-muted-foreground">Configure work, rest, and total workout duration</p>
+          <div className="space-y-3 p-1">
+            <div className="text-center mb-3">
+              <h3 className="text-base font-semibold text-foreground">Set your timing</h3>
+              <p className="text-xs text-muted-foreground">Configure work, rest, and total workout duration</p>
             </div>
             
-            {/* Mobile-first vertical layout */}
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <Label htmlFor="work-seconds" className="text-base font-medium flex items-center gap-2">
-                  <Timer className="h-4 w-4 text-primary" />
+            {/* Compact vertical layout */}
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label htmlFor="work-seconds" className="text-xs font-medium flex items-center gap-1">
+                  <Timer className="h-3 w-3 text-primary" />
                   Work Duration
                 </Label>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <div className="flex items-center justify-center gap-4">
+                <div className="bg-muted/50 rounded p-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, workSeconds: Math.max(10, (prev.workSeconds || 20) - 5) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.workSeconds || 20) <= 10}
                     >
                       −
                     </Button>
                     <div className="flex-1 text-center">
-                      <div className="text-3xl font-bold text-foreground">{presetData.workSeconds || 20}</div>
-                      <div className="text-sm text-muted-foreground">seconds</div>
+                      <div className="text-xl font-bold text-foreground">{presetData.workSeconds || 20}</div>
+                      <div className="text-xs text-muted-foreground">seconds</div>
                     </div>
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, workSeconds: Math.min(120, (prev.workSeconds || 20) + 5) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.workSeconds || 20) >= 120}
                     >
                       +
@@ -200,31 +200,31 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="rest-seconds" className="text-base font-medium flex items-center gap-2">
-                  <Timer className="h-4 w-4 text-blue-500" />
+              <div className="space-y-1">
+                <Label htmlFor="rest-seconds" className="text-xs font-medium flex items-center gap-1">
+                  <Timer className="h-3 w-3 text-blue-500" />
                   Rest Duration
                 </Label>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <div className="flex items-center justify-center gap-4">
+                <div className="bg-muted/50 rounded p-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, restSeconds: Math.max(5, (prev.restSeconds || 40) - 5) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.restSeconds || 40) <= 5}
                     >
                       −
                     </Button>
                     <div className="flex-1 text-center">
-                      <div className="text-3xl font-bold text-foreground">{presetData.restSeconds || 40}</div>
-                      <div className="text-sm text-muted-foreground">seconds</div>
+                      <div className="text-xl font-bold text-foreground">{presetData.restSeconds || 40}</div>
+                      <div className="text-xs text-muted-foreground">seconds</div>
                     </div>
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, restSeconds: Math.min(180, (prev.restSeconds || 40) + 5) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.restSeconds || 40) >= 180}
                     >
                       +
@@ -233,31 +233,31 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="total-minutes" className="text-base font-medium flex items-center gap-2">
-                  <Timer className="h-4 w-4 text-green-500" />
+              <div className="space-y-1">
+                <Label htmlFor="total-minutes" className="text-xs font-medium flex items-center gap-1">
+                  <Timer className="h-3 w-3 text-green-500" />
                   Total Workout Duration
                 </Label>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <div className="flex items-center justify-center gap-4">
+                <div className="bg-muted/50 rounded p-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, totalMinutes: Math.max(1, (prev.totalMinutes || 20) - 1) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.totalMinutes || 20) <= 1}
                     >
                       −
                     </Button>
                     <div className="flex-1 text-center">
-                      <div className="text-3xl font-bold text-foreground">{presetData.totalMinutes || 20}</div>
-                      <div className="text-sm text-muted-foreground">minutes</div>
+                      <div className="text-xl font-bold text-foreground">{presetData.totalMinutes || 20}</div>
+                      <div className="text-xs text-muted-foreground">minutes</div>
                     </div>
                     <Button
                       variant="outline"
-                      size="lg"
+                      size="sm"
                       onClick={() => setPresetData(prev => ({ ...prev, totalMinutes: Math.min(60, (prev.totalMinutes || 20) + 1) }))}
-                      className="h-12 w-12 rounded-full"
+                      className="h-8 w-8 rounded-full text-xs"
                       disabled={(presetData.totalMinutes || 20) >= 60}
                     >
                       +
@@ -471,56 +471,60 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg bg-card border-border shadow-timer max-h-[90vh] overflow-hidden">
-        <div className="p-6">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-2">
+      <Card className="w-full max-w-md bg-card border-border shadow-timer max-h-[85vh] flex flex-col">
+        <div className="p-3 pb-2 flex-shrink-0">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-foreground">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-foreground">
               {editingPreset ? 'Edit Workout' : 'Create Workout'}
             </h2>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-5 w-5" />
+            <Button variant="ghost" size="sm" onClick={onClose} className="h-6 w-6 p-0">
+              <X className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-3">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
                   index <= currentStepIndex 
                     ? 'bg-primary border-primary text-primary-foreground' 
                     : 'border-muted text-muted-foreground'
                 }`}>
                   {index < currentStepIndex ? (
-                    <Check className="h-4 w-4" />
+                    <Check className="h-3 w-3" />
                   ) : (
-                    step.icon
+                    <div className="w-2 h-2 rounded-full bg-current" />
                   )}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-8 h-0.5 mx-2 ${
+                  <div className={`w-4 h-0.5 mx-1 ${
                     index < currentStepIndex ? 'bg-primary' : 'bg-muted'
                   }`} />
                 )}
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Step Content */}
-          <div className="min-h-[300px] overflow-y-auto">
-            {renderStepContent()}
-          </div>
+        {/* Content Area */}
+        <div className="flex-1 px-3">
+          {renderStepContent()}
+        </div>
 
-          {/* Navigation */}
-          <div className="flex justify-between mt-6">
+        {/* Fixed Navigation Footer */}
+        <div className="p-3 pt-2 border-t border-border flex-shrink-0">
+          <div className="flex justify-between">
             <Button
               variant="outline"
               onClick={prevStep}
               disabled={currentStepIndex === 0}
+              size="sm"
+              className="text-xs"
             >
-              <ChevronLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="h-3 w-3 mr-1" />
               Previous
             </Button>
 
@@ -528,19 +532,21 @@ const PresetWizard: React.FC<PresetWizardProps> = ({ onClose, onSave, editingPre
               <Button
                 onClick={handleSave}
                 disabled={!canProceed()}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 text-xs"
+                size="sm"
               >
-                <Check className="h-4 w-4 mr-1" />
-                {editingPreset ? 'Update Preset' : 'Create Preset'}
+                <Check className="h-3 w-3 mr-1" />
+                {editingPreset ? 'Update' : 'Create'}
               </Button>
             ) : (
               <Button
                 onClick={nextStep}
                 disabled={!canProceed()}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 text-xs"
+                size="sm"
               >
                 Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
             )}
           </div>

@@ -6,12 +6,16 @@ import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { usePresets } from '@/hooks/usePresets';
 
 const IntervalTimer: React.FC = () => {
-  // Timer settings
-  const [totalMinutes, setTotalMinutes] = useState(20); // Total workout time in minutes
-  const [workSeconds, setWorkSeconds] = useState(20); // Work duration in seconds
-  const restSeconds = 60 - workSeconds; // Rest duration automatically calculated
+  // Preset system
+  const { selectedPreset } = usePresets();
+  
+  // Timer settings - use preset values if available
+  const [totalMinutes, setTotalMinutes] = useState(selectedPreset?.totalMinutes || 20);
+  const [workSeconds, setWorkSeconds] = useState(selectedPreset?.workSeconds || 20);
+  const [restSeconds, setRestSeconds] = useState(selectedPreset?.restSeconds || 40);
   
   // Timer state
   const [isRunning, setIsRunning] = useState(false);
@@ -20,12 +24,36 @@ const IntervalTimer: React.FC = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const totalRounds = totalMinutes; // One round per minute
   const [isWorkoutComplete, setIsWorkoutComplete] = useState(false);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   
   // UI state
   const [showSettings, setShowSettings] = useState(false);
   
   // Wake lock to keep screen active during workout
   useWakeLock(isRunning);
+
+  // Update timer settings when preset changes
+  useEffect(() => {
+    if (selectedPreset) {
+      setTotalMinutes(selectedPreset.totalMinutes);
+      setWorkSeconds(selectedPreset.workSeconds);
+      setRestSeconds(selectedPreset.restSeconds);
+      setCurrentExerciseIndex(0);
+      resetTimer();
+    }
+  }, [selectedPreset]);
+
+  // Get current and next exercise
+  const getCurrentExercise = () => {
+    if (!selectedPreset?.exercises || selectedPreset.exercises.length === 0) return null;
+    return selectedPreset.exercises[currentExerciseIndex % selectedPreset.exercises.length];
+  };
+
+  const getNextExercise = () => {
+    if (!selectedPreset?.exercises || selectedPreset.exercises.length === 0) return null;
+    const nextIndex = (currentExerciseIndex + 1) % selectedPreset.exercises.length;
+    return selectedPreset.exercises[nextIndex];
+  };
 
   // Reset timer to initial state
   const resetTimer = useCallback(() => {
@@ -34,6 +62,7 @@ const IntervalTimer: React.FC = () => {
     setIsWorkPhase(true);
     setCurrentRound(1);
     setIsWorkoutComplete(false);
+    setCurrentExerciseIndex(0);
   }, [workSeconds]);
 
   // Timer tick logic
@@ -49,7 +78,14 @@ const IntervalTimer: React.FC = () => {
             setIsWorkPhase(false);
             return restSeconds;
           } else {
-            // Switching from rest to work or ending workout
+            // Switching from rest to work
+            // Move to next exercise if using preset
+            if (selectedPreset && selectedPreset.exercises.length > 0) {
+              setCurrentExerciseIndex(prev => 
+                prev + 1 < selectedPreset.exercises.length ? prev + 1 : 0
+              );
+            }
+            
             if (currentRound >= totalRounds) {
               // Workout complete
               setIsWorkoutComplete(true);
@@ -181,20 +217,36 @@ const IntervalTimer: React.FC = () => {
 
         {/* Workout summary */}
         <Card className="p-4 bg-card border-border">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-sm text-muted-foreground">Total Time</div>
-              <div className="font-semibold text-foreground">{totalMinutes}m</div>
+          {selectedPreset ? (
+            <div className="text-center">
+              {isWorkPhase ? (
+                <div>
+                  <div className="text-sm text-muted-foreground">Current Exercise</div>
+                  <div className="font-semibold text-work">{getCurrentExercise()?.name || 'None'}</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-sm text-muted-foreground">Next Exercise</div>
+                  <div className="font-semibold text-muted-foreground">{getNextExercise()?.name || 'End'}</div>
+                </div>
+              )}
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Work</div>
-              <div className="font-semibold text-work">{workSeconds}s</div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-sm text-muted-foreground">Total Time</div>
+                <div className="font-semibold text-foreground">{totalMinutes}m</div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Work</div>
+                <div className="font-semibold text-work">{workSeconds}s</div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Rest</div>
+                <div className="font-semibold text-rest">{restSeconds}s</div>
+              </div>
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Rest</div>
-              <div className="font-semibold text-rest">{restSeconds}s</div>
-            </div>
-          </div>
+          )}
         </Card>
       </div>
 
