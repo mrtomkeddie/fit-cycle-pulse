@@ -5,12 +5,12 @@ import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
 import AudioManager from './AudioManager';
-import { usePresets } from '@/hooks/usePresetsHybrid';
+import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
 import { Exercise } from '@/types/presets';
 
 const HIITTimer: React.FC = () => {
   // Preset management
-  const { selectedPreset, selectPreset } = usePresets();
+  const { selectedPreset, selectPreset } = usePresetsSupabase();
   
   // Timer settings
   const [totalMinutes, setTotalMinutes] = useState(20); // Total workout time in minutes

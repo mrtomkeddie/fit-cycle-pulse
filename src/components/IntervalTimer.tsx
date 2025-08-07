@@ -1,16 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
+import PresetManager from './PresetManager';
 import AudioManager from './AudioManager';
 import { useWakeLock } from '@/hooks/useWakeLock';
-import { usePresets } from '@/hooks/usePresetsHybrid';
+import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
 
-const IntervalTimer: React.FC = () => {
+interface IntervalTimerProps {
+  showSettings?: boolean;
+  onCloseSettings?: () => void;
+  showPresets?: boolean;
+  onClosePresets?: () => void;
+}
+
+const IntervalTimer: React.FC<IntervalTimerProps> = ({
+  showSettings = false,
+  onCloseSettings,
+  showPresets = false,
+  onClosePresets,
+}) => {
   // Preset system
-  const { selectedPreset } = usePresets();
+  const { selectedPreset } = usePresetsSupabase();
   
   // Timer settings - use preset values if available
   const [totalMinutes, setTotalMinutes] = useState(selectedPreset?.totalMinutes || 20);
@@ -27,7 +40,11 @@ const IntervalTimer: React.FC = () => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   
   // UI state
-  const [showSettings, setShowSettings] = useState(false);
+  const [internalShowSettings, setInternalShowSettings] = useState(false);
+  
+  // Use external state if provided, otherwise use internal state
+  const isSettingsOpen = showSettings !== undefined ? showSettings : internalShowSettings;
+  const handleCloseSettings = onCloseSettings || (() => setInternalShowSettings(false));
   
   // Wake lock to keep screen active during workout
   useWakeLock(isRunning);
@@ -129,24 +146,16 @@ const IntervalTimer: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        
-        {/* Header with settings */}
-        <div className="flex items-center justify-between">
-          <img 
-            src="/workoutimer/icons/logo.png" 
-            alt="Fit Cycle Pulse" 
-            className="h-10 w-auto"
-          />
-          <Button
-            variant="ghost"
-            size="lg"
-            onClick={() => setShowSettings(true)}
-            className="h-16 w-16 text-muted-foreground hover:text-foreground flex items-center justify-center p-0"
-          >
-            <Settings className="h-10 w-10" />
-          </Button>
-        </div>
+      {/* Logo in top-left */}
+      <div className="absolute top-4 left-4">
+        <img 
+          src="/workoutimer/icons/logo.png" 
+          alt="Fit Cycle Pulse" 
+          className="h-10 w-auto"
+        />
+      </div>
+      
+      <div className="w-full max-w-md space-y-8 pt-20">
 
         {/* Main timer display */}
         <Card className="p-8 bg-card border-border shadow-timer">
@@ -252,14 +261,21 @@ const IntervalTimer: React.FC = () => {
 
       {/* Settings modal */}
       <TimerSettings
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
+        isOpen={isSettingsOpen}
+        onClose={handleCloseSettings}
         totalMinutes={totalMinutes}
         workSeconds={workSeconds}
         restSeconds={restSeconds}
         onTotalMinutesChange={setTotalMinutes}
         onWorkSecondsChange={setWorkSeconds}
       />
+
+      {/* Presets modal */}
+      {showPresets && (
+        <PresetManager
+          onClose={onClosePresets || (() => {})}
+        />
+      )}
 
       {/* Audio manager */}
       <AudioManager

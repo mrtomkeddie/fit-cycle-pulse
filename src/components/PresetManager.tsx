@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Trash2, Edit3, Timer, Zap, Dumbbell, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { usePresets } from '@/hooks/usePresetsHybrid';
+import { Timer, Zap, Dumbbell, Check, X, ChevronLeft, ChevronRight, Plus, Trash2, Edit3, Loader2 } from 'lucide-react';
+import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
 import { WorkoutPreset } from '@/types/presets';
 import NumberInput from './NumberInput';
 
@@ -15,7 +15,7 @@ interface PresetManagerProps {
 }
 
 const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
-  const { presets, selectedPresetId, selectPreset, addPreset, updatePreset, deletePreset } = usePresets();
+  const { presets, selectedPresetId, selectPreset, addPreset, updatePreset, deletePreset, isLoading, error } = usePresetsSupabase();
   const [showWizard, setShowWizard] = useState(false);
   const [editingPreset, setEditingPreset] = useState<WorkoutPreset | null>(null);
   
@@ -594,20 +594,24 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
               </Button>
 
               {currentStepIndex === steps.length - 1 ? (
-                <Button
-                  onClick={handleWizardSave}
-                  disabled={!canProceed()}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Check className="h-4 w-4 mr-1" />
-                  {editingPreset ? 'Update Preset' : 'Create Preset'}
-                </Button>
-              ) : (
-                <Button
-                  onClick={nextStep}
-                  disabled={!canProceed()}
-                  className="bg-primary hover:bg-primary/90"
-                >
+                                  <Button
+                    onClick={handleWizardSave}
+                    disabled={!canProceed() || isLoading}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 mr-1" />
+                    ) : (
+                      <Check className="h-4 w-4 mr-1" />
+                    )}
+                    {editingPreset ? 'Update Preset' : 'Create Preset'}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={nextStep}
+                    disabled={!canProceed() || isLoading}
+                    className="bg-primary hover:bg-primary/90"
+                  >
                   Next
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
@@ -644,7 +648,13 @@ const PresetManager: React.FC<PresetManagerProps> = ({ onClose }) => {
           >
             Manual Mode (No Preset)
           </Button>
-          {presets.length === 0 && (
+                     {isLoading && (
+             <div className="text-center py-6 text-muted-foreground">
+               <Loader2 className="h-6 w-6 animate-spin mb-2" />
+               <p className="text-sm">Loading presets...</p>
+             </div>
+           )}
+           {presets.length === 0 && !isLoading && (
             <div className="text-center py-6 text-muted-foreground">
               <p className="text-sm">No workout presets yet.</p>
               <p className="text-xs">Click "New Preset" to create your first workout!</p>
