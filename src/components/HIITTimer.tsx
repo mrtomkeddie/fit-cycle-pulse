@@ -8,6 +8,9 @@ import AudioManager from './AudioManager';
 import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
 import { Exercise } from '@/types/presets';
 
+// Cache-busting version for logo
+const LOGO_VERSION = '20250807-001';
+
 const HIITTimer: React.FC = () => {
   // Preset management
   const { selectedPreset, selectPreset } = usePresetsSupabase();
@@ -127,7 +130,7 @@ const HIITTimer: React.FC = () => {
         {/* Header with settings */}
         <div className="flex items-center justify-between mt-4">
           <img 
-            src="/workoutimer/icons/logo.png" 
+            src={`/workoutimer/icons/logo.png?v=${LOGO_VERSION}`}
             alt="Interval Timer" 
             className="h-8 w-auto" 
           />

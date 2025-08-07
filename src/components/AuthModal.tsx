@@ -6,6 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
+// Cache-busting version for logo
+const LOGO_VERSION = '20250807-001';
+
 interface AuthModalProps {
   onClose: () => void;
 }
@@ -51,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           {/* Logo */}
           <div className="text-center mb-6 sm:mb-8">
             <img 
-              src="/workoutimer/icons/logo.png" 
+              src={`/workoutimer/icons/logo.png?v=${LOGO_VERSION}`}
               alt="Fit Cycle Pulse" 
               className="h-10 sm:h-12 w-auto mx-auto"
             />

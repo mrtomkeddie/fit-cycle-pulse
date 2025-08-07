@@ -9,6 +9,9 @@ import AudioManager from './AudioManager';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
 
+// Cache-busting version for logo
+const LOGO_VERSION = '20250807-001';
+
 interface IntervalTimerProps {
   showSettings?: boolean;
   onCloseSettings?: () => void;
@@ -149,7 +152,7 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
       {/* Logo in top-left */}
       <div className="absolute top-4 left-4 pt-safe-top pl-safe-left">
         <img 
-          src="/workoutimer/icons/logo.png" 
+          src={`/workoutimer/icons/logo.png?v=${LOGO_VERSION}`}
           alt="Fit Cycle Pulse" 
           className="h-10 w-auto"
         />
