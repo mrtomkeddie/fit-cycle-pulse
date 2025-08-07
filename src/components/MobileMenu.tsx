@@ -48,60 +48,62 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onOpenSettings, onOpenPresets }
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            {user?.name || 'User'}
-          </SheetTitle>
-        </SheetHeader>
-        
-        <div className="mt-6 space-y-4">
-          {/* User Info */}
-          <Card className="p-4">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-foreground">
-                Welcome, {user?.name}!
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {user?.email}
-              </p>
-            </div>
-          </Card>
+      <SheetContent side="right" className="w-[300px] sm:w-[400px] pt-safe-top pb-safe-bottom">
+        <div className="pt-4">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              {user?.name || 'User'}
+            </SheetTitle>
+          </SheetHeader>
+          
+          <div className="mt-6 space-y-4 pb-8">
+            {/* User Info */}
+            <Card className="p-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground">
+                  Welcome, {user?.name}!
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </Card>
 
-          {/* Menu Items */}
-          <div className="space-y-2">
+            {/* Menu Items */}
+            <div className="space-y-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={handleSettings}
+              >
+                <Settings className="h-4 w-4 mr-3" />
+                Timer Settings
+              </Button>
+              
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={handlePresets}
+              >
+                <Dumbbell className="h-4 w-4 mr-3" />
+                Workout Presets
+              </Button>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-border my-4" />
+
+            {/* Logout */}
             <Button
               variant="ghost"
-              className="w-full justify-start"
-              onClick={handleSettings}
+              className="w-full justify-start text-destructive hover:text-destructive"
+              onClick={handleLogout}
             >
-              <Settings className="h-4 w-4 mr-3" />
-              Timer Settings
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={handlePresets}
-            >
-              <Dumbbell className="h-4 w-4 mr-3" />
-              Workout Presets
+              <LogOut className="h-4 w-4 mr-3" />
+              Sign Out
             </Button>
           </div>
-
-          {/* Divider */}
-          <div className="border-t border-border my-4" />
-
-          {/* Logout */}
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4 mr-3" />
-            Sign Out
-          </Button>
         </div>
       </SheetContent>
     </Sheet>
