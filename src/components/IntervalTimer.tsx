@@ -18,7 +18,7 @@ interface IntervalTimerProps {
 }
 
 const IntervalTimer: React.FC<IntervalTimerProps> = ({
-  showSettings = false,
+  showSettings,
   onCloseSettings,
 }) => {
   // Preset system
@@ -44,7 +44,7 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
   const [settingsInitialTab, setSettingsInitialTab] = useState<'timer' | 'presets'>('timer');
   
   // Use external state if provided, otherwise use internal state
-  const isSettingsOpen = showSettings !== undefined ? showSettings : internalShowSettings;
+  const isSettingsOpen = showSettings ?? internalShowSettings;
   const handleCloseSettings = onCloseSettings || (() => setInternalShowSettings(false));
 
   // Open settings helper
