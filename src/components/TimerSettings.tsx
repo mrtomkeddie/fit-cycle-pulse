@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ interface TimerSettingsProps {
   restSeconds: number;
   onTotalMinutesChange: (value: number) => void;
   onWorkSecondsChange: (value: number) => void;
+  initialTab?: 'timer' | 'presets';
 }
 
 const TimerSettings: React.FC<TimerSettingsProps> = ({
@@ -25,8 +26,16 @@ const TimerSettings: React.FC<TimerSettingsProps> = ({
   restSeconds,
   onTotalMinutesChange,
   onWorkSecondsChange,
+  initialTab,
 }) => {
-  const [activeTab, setActiveTab] = useState('timer');
+  const [activeTab, setActiveTab] = useState<'timer' | 'presets'>(initialTab ?? 'timer');
+
+  // When the settings modal is opened, ensure the requested tab is shown
+  useEffect(() => {
+    if (isOpen && initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   if (!isOpen) return null;
 
@@ -49,7 +58,7 @@ const TimerSettings: React.FC<TimerSettingsProps> = ({
             </Button>
           </div>
           
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab((v as 'timer' | 'presets'))} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="timer" className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />

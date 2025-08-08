@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import { Play, Pause, RotateCcw, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import CircularProgress from './CircularProgress';
 import TimerSettings from './TimerSettings';
-import PresetManager from './PresetManager';
 import AudioManager from './AudioManager';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { usePresetsSupabase } from '@/hooks/usePresetsSupabase';
+import { useAuth } from '@/hooks/useAuth';
 
 // Cache-busting version for logo
 const LOGO_VERSION = '20250807-001';
@@ -15,18 +15,15 @@ const LOGO_VERSION = '20250807-001';
 interface IntervalTimerProps {
   showSettings?: boolean;
   onCloseSettings?: () => void;
-  showPresets?: boolean;
-  onClosePresets?: () => void;
 }
 
 const IntervalTimer: React.FC<IntervalTimerProps> = ({
   showSettings = false,
   onCloseSettings,
-  showPresets = false,
-  onClosePresets,
 }) => {
   // Preset system
   const { selectedPreset } = usePresetsSupabase();
+  const { logout } = useAuth();
   
   // Timer settings - use preset values if available
   const [totalMinutes, setTotalMinutes] = useState(selectedPreset?.totalMinutes || 20);
@@ -44,10 +41,17 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
   
   // UI state
   const [internalShowSettings, setInternalShowSettings] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'timer' | 'presets'>('timer');
   
   // Use external state if provided, otherwise use internal state
   const isSettingsOpen = showSettings !== undefined ? showSettings : internalShowSettings;
   const handleCloseSettings = onCloseSettings || (() => setInternalShowSettings(false));
+
+  // Open settings helper
+  const openSettings = (tab: 'timer' | 'presets' = 'timer') => {
+    setSettingsInitialTab(tab);
+    setInternalShowSettings(true);
+  };
   
   // Wake lock to keep screen active during workout
   useWakeLock(isRunning);
@@ -156,6 +160,15 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
           alt="Fit Cycle Pulse" 
           className="h-10 w-auto"
         />
+      </div>
+      {/* Header actions top-right */}
+  <div className="absolute top-4 right-4 pt-safe-top pr-safe-right flex items-center gap-2">
+        <Button variant="ghost" size="icon" aria-label="Settings" onClick={() => openSettings('timer')}>
+          <SettingsIcon className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Log out" onClick={() => logout()}>
+          <LogOut className="h-5 w-5" />
+        </Button>
       </div>
       
       <div className="w-full max-w-md space-y-8 pt-20">
@@ -271,14 +284,8 @@ const IntervalTimer: React.FC<IntervalTimerProps> = ({
         restSeconds={restSeconds}
         onTotalMinutesChange={setTotalMinutes}
         onWorkSecondsChange={setWorkSeconds}
+        initialTab={settingsInitialTab}
       />
-
-      {/* Presets modal */}
-      {showPresets && (
-        <PresetManager
-          onClose={onClosePresets || (() => {})}
-        />
-      )}
 
       {/* Audio manager */}
       <AudioManager
