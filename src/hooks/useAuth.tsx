@@ -42,26 +42,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const loadSession = async () => {
       try {
         setIsLoading(true);
-        console.log('🔄 Loading session...');
         
         // Get current session
         const { data: { session }, error } = await supabase.auth.getSession();
         
-        console.log('📋 Session data:', session);
-        console.log('❌ Session error:', error);
-        
         if (error) {
           console.error('Error loading session:', error);
         } else if (session?.user) {
-          console.log('✅ User found in session:', session.user.email);
           setUser(convertSupabaseUser(session.user));
-        } else {
-          console.log('ℹ️ No user session found');
         }
       } catch (error) {
-        console.error('💥 Exception loading session:', error);
+  console.error('Exception loading session:', error);
       } finally {
-        console.log('🏁 Session loading complete');
         setIsLoading(false);
       }
     };
@@ -71,13 +63,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state changed:', event, session?.user?.email);
         
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ User signed in:', session.user.email);
           setUser(convertSupabaseUser(session.user));
         } else if (event === 'SIGNED_OUT') {
-          console.log('👋 User signed out');
           setUser(null);
         }
         
@@ -85,10 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    return () => {
-      console.log('🧹 Cleaning up auth subscription');
-      subscription.unsubscribe();
-    };
+  return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
