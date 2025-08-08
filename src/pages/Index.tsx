@@ -6,25 +6,33 @@ import MobileMenu from '../components/MobileMenu';
 import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
+  console.log('📄 Index component rendering...');
+  
   const { user, isLoading } = useAuth();
   const [showSettings, setShowSettings] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
 
+  console.log('👤 User state:', { user: user?.email, isLoading });
+
   if (isLoading) {
+    console.log('⏳ Showing loading spinner...');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!user) {
-    return <AuthModal onClose={() => {}} />;
+    console.log('🚫 No user, showing auth modal...');
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <AuthModal onClose={() => {}} />
+      </div>
+    );
   }
 
+  console.log('✅ User logged in, showing main app...');
   return (
     <>
       {/* Hamburger Menu (all devices) */}

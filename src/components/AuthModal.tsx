@@ -48,9 +48,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="h-screen h-dvh bg-background flex items-center justify-center p-4 overflow-hidden">
-      <Card className="w-full max-w-md bg-card border-border shadow-timer max-h-[90vh] overflow-y-auto">
-        <div className="p-6 sm:p-8">
+    <div className="h-screen h-dvh bg-background flex items-center justify-center p-2 overflow-hidden">
+      <Card className="w-full bg-card border-border shadow-timer max-h-[90vh] overflow-y-auto" style={{ width: '500px', maxWidth: '90vw' }}>
+        <div className="p-8 sm:p-12 w-full">
           {/* Logo */}
           <div className="text-center mb-6 sm:mb-8">
             <img 
@@ -61,13 +61,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 w-full" style={{ width: '100%' }}>
             {!isLogin && (
-              <div className="space-y-2">
+              <div className="space-y-2 w-full">
                 <Label htmlFor="name" className="text-sm font-medium">
                   Name
                 </Label>
-                <div className="relative">
+                <div className="relative w-full">
                   <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="name"
@@ -75,18 +75,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
-                    className="pl-10"
+                    className="pl-10 w-full"
+                    style={{ width: '100%', maxWidth: 'none' }}
                     disabled={isLoading}
                   />
                 </div>
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-2 w-full">
               <Label htmlFor="email" className="text-sm font-medium">
                 Email
               </Label>
-              <div className="relative">
+              <div className="relative w-full">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
@@ -94,17 +95,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="pl-10"
+                  className="pl-10 w-full"
+                  style={{ width: '100%', maxWidth: 'none' }}
                   disabled={isLoading}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 w-full">
               <Label htmlFor="password" className="text-sm font-medium">
                 Password
               </Label>
-              <div className="relative">
+              <div className="relative w-full">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
@@ -112,7 +114,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="pl-10"
+                  className="pl-10 w-full"
+                  style={{ width: '100%', maxWidth: 'none' }}
                   disabled={isLoading}
                 />
               </div>
@@ -126,7 +129,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90"
+              className="w-full bg-primary hover:bg-primary/90 mt-6"
               disabled={isLoading}
             >
               {isLoading ? (
