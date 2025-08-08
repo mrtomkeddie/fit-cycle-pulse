@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local debug helpers
+**/*-debug.tsx
+**/*-debug.ts
