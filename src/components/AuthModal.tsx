@@ -54,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           {/* Logo */}
           <div className="text-center mb-6 sm:mb-8">
             <img 
-              src={`/workoutimer/icons/logo.png?v=${LOGO_VERSION}`}
+              src={`${import.meta.env.BASE_URL}icons/logo.png?v=${LOGO_VERSION}`}
               alt="Fit Cycle Pulse" 
               className="h-10 sm:h-12 w-auto mx-auto"
             />

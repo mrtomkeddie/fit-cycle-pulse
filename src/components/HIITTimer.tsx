@@ -129,11 +129,13 @@ const HIITTimer: React.FC = () => {
       <div className="w-full max-w-md space-y-6 p-4">
         {/* Header with settings */}
         <div className="flex items-center justify-between mt-4">
-          <img 
-            src={`/workoutimer/icons/logo.png?v=${LOGO_VERSION}`}
-            alt="Interval Timer" 
-            className="h-8 w-auto" 
-          />
+          <div className="absolute top-4 left-4 pt-safe-top pl-safe-left">
+            <img
+              src={`${import.meta.env.BASE_URL}icons/logo.png?v=${LOGO_VERSION}`}
+              alt="Fit Cycle Pulse"
+              className="h-10 w-auto"
+            />
+          </div>
           <Button
             variant="ghost"
             size="sm"

@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/workoutimer/',
+  base: mode === 'production' ? '/workoutimer/' : '/',
   server: {
     host: "::",
     port: 8080,
