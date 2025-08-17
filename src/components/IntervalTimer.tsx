@@ -103,8 +103,17 @@ const IntervalTimer: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
-        {/* Settings button */}
-        <div className="flex justify-end mb-2">
+        {/* Header with logo and settings button */}
+        <div className="relative mb-2 flex items-center justify-between">
+          {/* Logo top-left */}
+          <div className="z-10">
+            <img
+              src={`${import.meta.env.BASE_URL}icons/logo.png`}
+              alt="Workoutimer Logo"
+              className="h-8 w-auto"
+            />
+          </div>
+          {/* Settings button top-right */}
           <Button variant="ghost" size="icon" aria-label="Settings" onClick={() => setShowSettings(true)}>
             <Settings className="h-6 w-6" />
           </Button>
