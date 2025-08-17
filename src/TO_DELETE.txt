@@ -1,0 +1,8 @@
+Auth and preset-related files to delete:
+- src/components/AuthModal.tsx
+- src/hooks/useAuth.tsx
+- src/lib/supabase.ts
+- src/components/PresetManager.tsx
+- src/hooks/usePresetsSupabase.ts
+- src/hooks/usePresets.ts
+- src/contexts/AuthContext.tsx
