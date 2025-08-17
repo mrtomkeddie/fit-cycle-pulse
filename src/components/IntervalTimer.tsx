@@ -1,3 +1,4 @@
+import { Settings } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -102,6 +103,12 @@ const IntervalTimer: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
+        {/* Settings button */}
+        <div className="flex justify-end mb-2">
+          <Button variant="ghost" size="icon" aria-label="Settings" onClick={() => setShowSettings(true)}>
+            <Settings className="h-6 w-6" />
+          </Button>
+        </div>
         {/* Main timer display */}
         <Card className="p-8 bg-card border-border shadow-timer">
           <div className="flex flex-col items-center space-y-8">
